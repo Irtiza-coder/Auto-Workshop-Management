@@ -32,6 +32,11 @@ mobile_app/android/app/build/
 .DS_Store
 Thumbs.db
 
+# Desktop Launcher Scripts
+*.bat
+*.vbs
+
 # Environment Variables
 .env
 .env.local
+
