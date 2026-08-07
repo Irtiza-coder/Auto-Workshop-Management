@@ -1,0 +1,119 @@
+# 🚘 AutoShop Pro — Workshop Management System
+
+AutoShop Pro is a full-stack Auto Repair & Workshop Management System built with **Python (Django)**, **Bootstrap**, and **REST APIs** for mobile integration. It simplifies daily automotive workshop operations including job tracking, inventory management, customer vehicle history, and billing.
+
+---
+
+## 🌟 Key Features
+
+* 📊 **Interactive Dashboard**: View active jobs, revenue metrics, inventory alerts, and quick actions.
+* 🚗 **Customer & Vehicle Management**: Vehicle history linked to owners by license plate and phone number.
+* 🛠️ **Job Cards & Workflows**: Real-time status tracking (`Pending`, `In Progress`, `Completed`), labor items, and parts usage.
+* 📦 **Parts & Inventory Tracking**: Support for part categories (*Genuine, OEM, Aftermarket*), profit margin calculations, and low-stock alerts.
+* 🧾 **Invoicing & PDF Receipts**: Automatic total calculation, partial/full payment status, thermal printing layout, and PDF generation.
+* 📱 **Mobile REST APIs**: Integrated JSON endpoints (`/api/`) for mobile app integration.
+
+---
+
+## 🚀 Local Setup & Installation Guide
+
+Follow these step-by-step instructions to run the project on your local machine:
+
+### Prerequisites
+* **Python 3.10+** installed
+* **Git** installed
+
+---
+
+### Step 1: Clone the Repository
+```bash
+git clone https://github.com/Irtiza-coder/Auto-Workshop-Management.git
+cd Auto-Workshop-Management
+```
+
+---
+
+### Step 2: Create & Activate Virtual Environment
+
+* **Windows (PowerShell / Command Prompt)**:
+  ```bash
+  python -m venv venv
+  .\venv\Scripts\activate
+  ```
+
+* **macOS / Linux**:
+  ```bash
+  python3 -m venv venv
+  source venv/bin/activate
+  ```
+
+---
+
+### Step 3: Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+### Step 4: Run Database Migrations
+```bash
+python manage.py migrate
+```
+
+---
+
+### Step 5: Create Admin Account (Superuser)
+```bash
+python manage.py createsuperuser
+```
+Follow the prompts to enter your admin **Username**, **Email**, and **Password**.
+
+---
+
+### Step 6: Start the Development Server
+```bash
+python manage.py runserver
+```
+
+Open your browser and visit:
+* 🌐 **Workshop App**: [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/)
+* ⚙️ **Django Admin Panel**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+
+---
+
+## ☁️ Live Deployment (Render.com)
+
+This project includes a pre-configured `render.yaml` blueprint for 1-click deployment on [Render.com](https://render.com).
+
+1. Log in to **Render Dashboard**.
+2. Click **New +** -> **Blueprint**.
+3. Select this repository: `Irtiza-coder/Auto-Workshop-Management`.
+4. Enter a Blueprint name and click **Deploy Blueprint**.
+5. Once live, open the **Shell** tab on Render and run:
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+---
+
+## 📁 Project Structure
+
+```
+├── core/                   # Django App (Models, Views, Forms, APIs)
+│   ├── models.py           # Customer, Vehicle, Part, JobCard, Invoice models
+│   ├── views.py            # Web application views
+│   └── views_api.py        # REST API endpoints for mobile app
+├── templates/              # HTML Templates (Bootstrap UI)
+├── static/                 # Static CSS, JS, Images, Icons
+├── workshop_system/        # Project Settings & Routing
+├── build.sh                # Deployment build script for Render
+├── render.yaml             # Render Blueprint infrastructure definition
+├── requirements.txt        # Python dependencies
+└── manage.py               # Django CLI utility
+```
+
+---
+
+## 📄 License
+This project is open-source and available under the **MIT License**.
