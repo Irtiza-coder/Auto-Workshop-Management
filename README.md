@@ -82,21 +82,6 @@ Open your browser and visit:
 
 ---
 
-## ☁️ Live Deployment (Render.com)
-
-This project includes a pre-configured `render.yaml` blueprint for 1-click deployment on [Render.com](https://render.com).
-
-1. Log in to **Render Dashboard**.
-2. Click **New +** -> **Blueprint**.
-3. Select this repository: `Irtiza-coder/Auto-Workshop-Management`.
-4. Enter a Blueprint name and click **Deploy Blueprint**.
-5. Once live, open the **Shell** tab on Render and run:
-   ```bash
-   python manage.py createsuperuser
-   ```
-
----
-
 ## 📁 Project Structure
 
 ```
@@ -112,8 +97,3 @@ This project includes a pre-configured `render.yaml` blueprint for 1-click deplo
 ├── requirements.txt        # Python dependencies
 └── manage.py               # Django CLI utility
 ```
-
----
-
-## 📄 License
-This project is open-source and available under the **MIT License**.
