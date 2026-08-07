@@ -242,6 +242,10 @@ new Chart(ctx2, {
     scales: {
       y: { beginAtZero: true, grid: { color: '#F0EDE9' }, ticks: { color: '#A8A29E', font: { size: 11 } } },
       x: { grid: { display: false }, ticks: { color: '#A8A29E', font: { size: 11 } } }
+    }
+  }
+});
+
 // Row click navigation
 document.querySelectorAll('tr.clickable').forEach(row => {
   row.addEventListener('click', function () {
@@ -251,3 +255,4 @@ document.querySelectorAll('tr.clickable').forEach(row => {
 });
 </script>
 {% endblock %}
+
