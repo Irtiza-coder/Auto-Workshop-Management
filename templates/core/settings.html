@@ -1,0 +1,118 @@
+{% extends 'core/base.html' %}
+{% block title %}Settings — AutoShop Pro{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="page-header" style="margin-bottom:24px;">
+  <div>
+    <div class="page-header-breadcrumb">ACCOUNT</div>
+    <h1 class="page-header-title">Settings</h1>
+  </div>
+</div>
+
+<!-- Admin Profile Banner Card — matches Image 5 -->
+<div class="card" style="padding:24px; margin-bottom:20px;">
+  <div style="display:flex; align-items:center; gap:20px;">
+    <div style="width:64px; height:64px; background:#C2410C; color:#fff; border-radius:16px; font-weight:800; font-size:1.75rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+      {{ user.username|first|upper }}
+    </div>
+    <div>
+      <h2 style="font-weight:700; font-size:1.25rem; color:#292524; margin-bottom:2px;">{{ user.username }}</h2>
+      <p style="font-size:0.875rem; color:#A8A29E; font-weight:500;">System Administrator</p>
+    </div>
+  </div>
+</div>
+
+<!-- Settings Options Card List — matches Image 5 -->
+<div class="card" style="padding:12px; display:flex; flex-direction:column; gap:8px;">
+
+  <!-- Change Username option -->
+  <div onclick="showModal('changeUsernameModal')" class="settings-item">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div style="width:40px; height:40px; border-radius:12px; background:#FFF7ED; color:#C2410C; display:flex; align-items:center; justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <div>
+        <div style="font-weight:700; color:#292524; font-size:1rem;">Change Username</div>
+        <div style="font-size:0.8rem; color:#A8A29E;">Update your display name</div>
+      </div>
+    </div>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A8A29E" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+
+  <!-- Change Password option -->
+  <div onclick="showModal('changePasswordModal')" class="settings-item">
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div style="width:40px; height:40px; border-radius:12px; background:#CCFBF1; color:#0D9488; display:flex; align-items:center; justify-content:center;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      </div>
+      <div>
+        <div style="font-weight:700; color:#292524; font-size:1rem;">Change Password</div>
+        <div style="font-size:0.8rem; color:#A8A29E;">Update your account password</div>
+      </div>
+    </div>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#A8A29E" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+  </div>
+
+</div>
+
+{% if user.is_superuser and all_users %}
+<!-- Superuser Only: Registered Workshop Users List -->
+<div class="card" style="padding:24px; margin-top:24px;">
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+    <div>
+      <h3 style="font-size:1.1rem; font-weight:700; color:#292524; margin:0;">Registered Workshop Users</h3>
+      <p style="font-size:0.8rem; color:#A8A29E; margin:2px 0 0 0;">All accounts registered to use the Workshop system</p>
+    </div>
+    <span class="badge" style="background:#FFF7ED; color:#C2410C; padding:6px 12px; border-radius:20px; font-weight:700; font-size:0.8rem;">
+      Total: {{ all_users|length }}
+    </span>
+  </div>
+
+  <div style="overflow-x:auto;">
+    <table class="table" style="width:100%; text-align:left; border-collapse:collapse;">
+      <thead>
+        <tr style="border-bottom:1px solid #E7E5E4; color:#A8A29E; font-size:0.75rem; text-transform:uppercase;">
+          <th style="padding:8px 12px;">User</th>
+          <th style="padding:8px 12px;">Email</th>
+          <th style="padding:8px 12px;">Role / Access</th>
+          <th style="padding:8px 12px;">Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in all_users %}
+        <tr style="border-bottom:1px solid #F5F5F4;">
+          <td style="padding:12px; font-weight:600; color:#292524;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="width:32px; height:32px; border-radius:8px; background:{% if u.is_superuser %}#C2410C{% else %}#0D9488{% endif %}; color:#fff; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:0.85rem;">
+                {{ u.username|first|upper }}
+              </div>
+              {{ u.username }}
+            </div>
+          </td>
+          <td style="padding:12px; font-size:0.875rem; color:#78716C;">
+            {{ u.email|default:"No email set" }}
+          </td>
+          <td style="padding:12px;">
+            {% if u.is_superuser %}
+              <span style="background:#FEF2F2; color:#DC2626; padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight:700;">System Super Admin</span>
+            {% else %}
+              <span style="background:#F0FDF4; color:#16A34A; padding:4px 10px; border-radius:12px; font-size:0.75rem; font-weight:700;">Workshop User</span>
+            {% endif %}
+          </td>
+          <td style="padding:12px;">
+            {% if u.is_active %}
+              <span style="color:#16A34A; font-weight:600; font-size:0.85rem;">● Active</span>
+            {% else %}
+              <span style="color:#DC2626; font-weight:600; font-size:0.85rem;">● Inactive</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
+

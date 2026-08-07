@@ -1,0 +1,290 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>{% block title %}AutoShop Pro — Workshop Manager{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+
+<div class="app-wrapper">
+  <!-- ╔══════════════════════════════════════════════╗ -->
+  <!-- ║  SIDEBAR — matches Layout.tsx exactly        ║ -->
+  <!-- ╚══════════════════════════════════════════════╝ -->
+  <aside class="app-sidebar" id="appSidebar">
+
+    <!-- Header -->
+    <div class="sidebar-header">
+      <a href="{% url 'dashboard' %}" class="sidebar-brand">
+        <div class="sidebar-brand-icon">
+          <!-- Wrench icon SVG (Lucide) -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color:#fff;">
+            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+          </svg>
+        </div>
+        <div>
+          <div class="sidebar-brand-name">AutoShop Pro</div>
+          <div class="sidebar-brand-sub">Workshop Manager</div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="sidebar-nav">
+
+      <!-- MAIN group -->
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">MAIN</div>
+        <a href="{% url 'dashboard' %}"
+           class="sidebar-item {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+          <!-- LayoutDashboard icon -->
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+          </svg>
+          <span style="flex:1;">Dashboard</span>
+          {% if request.resolver_match.url_name == 'dashboard' %}
+          <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          {% endif %}
+        </a>
+      </div>
+
+      <!-- WORKSHOP group -->
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">WORKSHOP</div>
+        <a href="{% url 'add_vehicle' %}"
+           class="sidebar-item {% if request.resolver_match.url_name == 'add_vehicle' %}active{% endif %}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+          </svg>
+          <span style="flex:1;">New Job Entry</span>
+          {% if request.resolver_match.url_name == 'add_vehicle' %}
+          <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          {% endif %}
+        </a>
+        <a href="{% url 'jobcard_list' %}"
+           class="sidebar-item {% if 'jobcard' in request.resolver_match.url_name and request.resolver_match.url_name != 'add_vehicle' %}active{% endif %}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/>
+          </svg>
+          <span style="flex:1;">All Jobs</span>
+          {% if 'jobcard' in request.resolver_match.url_name and request.resolver_match.url_name != 'add_vehicle' %}
+          <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          {% endif %}
+        </a>
+        <a href="{% url 'customer_list' %}"
+           class="sidebar-item {% if 'customer' in request.resolver_match.url_name %}active{% endif %}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span style="flex:1;">Customers</span>
+          {% if 'customer' in request.resolver_match.url_name %}
+          <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          {% endif %}
+        </a>
+      </div>
+
+      <!-- STOCK & SERVICES group -->
+      <div class="sidebar-group">
+        <div class="sidebar-group-label">STOCK &amp; SERVICES</div>
+        <a href="{% url 'inventory_list' %}"
+           class="sidebar-item {% if request.resolver_match.url_name == 'inventory_list' %}active{% endif %}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+          </svg>
+          <span style="flex:1;">Inventory</span>
+          {% if request.resolver_match.url_name == 'inventory_list' %}
+          <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          {% endif %}
+        </a>
+        <a href="{% url 'service_list' %}"
+           class="sidebar-item {% if request.resolver_match.url_name == 'service_list' %}active{% endif %}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+          </svg>
+          <span style="flex:1;">Services Catalog</span>
+          {% if request.resolver_match.url_name == 'service_list' %}
+          <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          {% endif %}
+        </a>
+        <a href="{% url 'revenue_summary' %}"
+           class="sidebar-item {% if request.resolver_match.url_name == 'revenue_summary' %}active{% endif %}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/>
+          </svg>
+          <span style="flex:1;">Revenue</span>
+          {% if request.resolver_match.url_name == 'revenue_summary' %}
+          <svg class="sidebar-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          {% endif %}
+        </a>
+      </div>
+
+    </nav>
+
+    <!-- Footer -->
+    <div class="sidebar-footer">
+      <a href="{% url 'settings' %}" class="sidebar-item {% if request.resolver_match.url_name == 'settings' %}active{% endif %}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+        Settings
+      </a>
+      <form action="{% url 'logout' %}" method="post" style="margin:0;">
+        {% csrf_token %}
+        <button type="submit" class="sidebar-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Logout
+        </button>
+      </form>
+    </div>
+
+  </aside>
+
+  <!-- ╔══════════════════════════════════════════════╗ -->
+  <!-- ║  MAIN AREA                                   ║ -->
+  <!-- ╚══════════════════════════════════════════════╝ -->
+  <div class="app-main">
+
+    <!-- Topbar -->
+    <header class="app-topbar">
+      <button type="button" onclick="document.getElementById('appSidebar').classList.toggle('show')"
+              style="padding:6px; border-radius:8px; border:none; background:transparent; color:#A8A29E; cursor:pointer;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+
+      <div class="topbar-spacer"></div>
+
+      <!-- User -->
+      <div class="topbar-user">
+        <div class="topbar-avatar">{{ user.username|first|upper }}</div>
+        <div class="d-none d-sm-block" style="display:block;">
+          <div class="topbar-username">{{ user.username }}</div>
+          <div class="topbar-role">Workshop Admin</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Content -->
+    <main class="app-content">
+      {% if messages %}
+        {% for message in messages %}
+          <div class="toast {% if message.tags == 'success' %}toast-success{% elif message.tags == 'warning' %}toast-warning{% else %}toast-error{% endif %}" style="margin-bottom:16px; max-width:420px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span style="flex:1;">{{ message }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+
+<!-- CHANGE USERNAME MODAL -->
+<div id="changeUsernameModal" style="display:none; position:fixed; inset:0; z-index:50; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.4);" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal-box">
+    <div class="modal-header-branded">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="modal-header-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="modal-header-title">Change Username</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('changeUsernameModal').style.display='none'">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form action="{% url 'change_username' %}" method="post">
+        {% csrf_token %}
+        <div class="form-field" style="margin-bottom:16px;">
+          <label class="form-label">New Username <span class="required">*</span></label>
+          <input type="text" name="new_username" class="form-control no-uppercase" value="{{ user.username }}" placeholder="Enter new username" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Save Username</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- CHANGE PASSWORD MODAL -->
+<div id="changePasswordModal" style="display:none; position:fixed; inset:0; z-index:50; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.4);" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal-box">
+    <div class="modal-header-branded">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="modal-header-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <div class="modal-header-title">Change Password</div>
+      </div>
+      <button class="modal-close" onclick="document.getElementById('changePasswordModal').style.display='none'">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form action="{% url 'change_password' %}" method="post">
+        {% csrf_token %}
+        <div class="form-field" style="margin-bottom:12px;">
+          <label class="form-label">Old Password <span class="required">*</span></label>
+          <input type="password" name="old_password" class="form-control no-uppercase" placeholder="Current password" required>
+        </div>
+        <div class="form-field" style="margin-bottom:12px;">
+          <label class="form-label">New Password <span class="required">*</span></label>
+          <input type="password" name="new_password1" class="form-control no-uppercase" placeholder="New password" required>
+        </div>
+        <div class="form-field" style="margin-bottom:16px;">
+          <label class="form-label">Confirm Password <span class="required">*</span></label>
+          <input type="password" name="new_password2" class="form-control no-uppercase" placeholder="Confirm password" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width:100%;">Update Password</button>
+      </form>
+    </div>
+  </div>
+<script>
+// Auto-dismiss all popup/toast/alert messages after 5 seconds across all pages
+document.addEventListener('DOMContentLoaded', function() {
+  const popupAlerts = document.querySelectorAll('.toast, .alert, .alert-dismissible');
+  popupAlerts.forEach(function(alert) {
+    setTimeout(function() {
+      alert.style.transition = 'opacity 0.6s ease, transform 0.6s ease, max-height 0.6s ease';
+      alert.style.opacity = '0';
+      alert.style.transform = 'translateY(-10px)';
+      setTimeout(function() {
+        alert.remove();
+      }, 600);
+    }, 5000); // 5 seconds
+  });
+});
+
+// Modal helpers
+function showModal(id){ document.getElementById(id).style.display='flex'; }
+function hideModal(id){ document.getElementById(id).style.display='none'; }
+// data-bs-toggle compatibility
+document.querySelectorAll('[data-bs-toggle="modal"]').forEach(btn=>{
+  btn.addEventListener('click',()=>{ showModal(btn.getAttribute('data-bs-target').replace('#','')); });
+});
+
+// Automatically convert typed letters to UPPERCASE across all workshop pages (except auth/settings)
+document.addEventListener('input', function(e) {
+  const target = e.target;
+  if (!target || target.classList.contains('no-uppercase') || target.closest('.no-uppercase') || target.closest('#changeUsernameModal') || target.closest('#changePasswordModal')) {
+    return;
+  }
+  if ((target.tagName === 'INPUT' && (target.type === 'text' || target.type === 'search' || !target.type)) || target.tagName === 'TEXTAREA') {
+    const start = target.selectionStart;
+    const end = target.selectionEnd;
+    target.value = target.value.toUpperCase();
+    if (start !== null && end !== null) {
+      target.setSelectionRange(start, end);
+    }
+  }
+});
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>

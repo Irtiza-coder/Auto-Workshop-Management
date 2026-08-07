@@ -1,0 +1,44 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Auto City — Workshop Mobile App</title>
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <meta name="theme-color" content="#C2410C">
+  <link rel="icon" type="image/png" href="{% static 'images/app_icon.png' %}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'mobile_app/assets/index-1dIuMo_i.css' %}">
+</head>
+<body style="margin:0; padding:0; background:#FAF8F4; font-family:'Nunito', sans-serif;">
+  <div id="root"></div>
+  <script type="module" src="{% static 'mobile_app/assets/index-BRfDgghV.js' %}"></script>
+  <div id="pwaInstallBanner" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:999999; background:#C2410C; color:#fff; padding:12px 24px; borderRadius:30px; font-weight:700; box-shadow:0 4px 15px rgba(194,65,12,0.4); cursor:pointer; display:flex; align-items:center; gap:8px;">
+    <span>📲 Install Auto City App</span>
+  </div>
+  <script>
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      const banner = document.getElementById('pwaInstallBanner');
+      if (banner) banner.style.display = 'flex';
+    });
+    document.getElementById('pwaInstallBanner')?.addEventListener('click', () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        deferredPrompt.userChoice.then(() => {
+          deferredPrompt = null;
+          document.getElementById('pwaInstallBanner').style.display = 'none';
+        });
+      }
+    });
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/static/sw.js').catch(function(){});
+    }
+  </script>
+</body>
+</html>

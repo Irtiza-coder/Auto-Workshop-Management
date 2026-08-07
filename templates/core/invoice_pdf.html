@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Auto City Invoice #{{ invoice.id }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 8mm 8mm 8mm 8mm;
+        }
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 12px;
+            color: #0f172a;
+            line-height: 1.3;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2px;
+        }
+
+        .logo-img {
+            width: 570px;
+            height: 220px;
+        }
+
+        .header-divider {
+            border-bottom: 1.8px solid #0f2b48;
+            margin-top: 2px;
+            margin-bottom: 1px;
+        }
+
+        .info-table {
+            width: 100%;
+            margin-bottom: 2px;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            padding: 1px 0px;
+            vertical-align: top;
+            font-size: 12px;
+            color: #1e293b;
+            line-height: 1.1;
+        }
+
+        .info-table td strong {
+            font-size: 12px;
+            font-weight: bold;
+            color: #0f2b48;
+        }
+
+        .details-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2px;
+            margin-bottom: 1px;
+        }
+
+        .details-table th,
+        .details-table td {
+            border: 1px solid #cbd5e1;
+            font-size: 11px;
+        }
+
+        .details-table th {
+            background-color: #0f2b48;
+            color: #ffffff;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 11px;
+            text-align: center;
+            letter-spacing: 0.5px;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            padding-left: 7px;
+            padding-right: 7px;
+            line-height: 1.1;
+            vertical-align: middle;
+        }
+
+        .details-table td {
+            padding: 5px 6px;
+            vertical-align: middle;
+        }
+
+        .details-table td.text-right {
+            text-align: right;
+        }
+
+        .details-table td.text-center {
+            text-align: center;
+        }
+
+        .part-row {
+            background-color: #ffffff;
+        }
+
+        .labour-row {
+            background-color: #f0f7ff;
+        }
+
+        .total-labour-row {
+            font-weight: bold;
+            background-color: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .grand-total-row {
+            font-weight: bold;
+            background-color: #0f2b48;
+            color: #ffffff;
+            font-size: 14px;
+        }
+
+        .grand-total-row td {
+            color: #ffffff !important;
+            border-color: #0f2b48 !important;
+        }
+
+        .footer-address {
+            text-align: center;
+            font-size: 11px;
+            font-weight: bold;
+            color: #0f2b48;
+            border-top: 1.8px solid #0f2b48;
+            padding-top: 8px;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header">
+        {% if logo_b64 %}
+        <img src="{{ logo_b64 }}" class="logo-img" alt="Auto City Logo"><br>
+        {% else %}
+        <div style="font-size: 32px; font-weight: bold; color: #0f2b48;">Auto City</div>
+        <div style="font-size: 9px; font-weight: bold; color: #0f2b48; letter-spacing: 1.2px;">MECHANICAL, ELECTRICAL,
+            EFI, DANTING &amp; PAINTING</div>
+        {% endif %}
+        <div class="header-divider"></div>
+    </div>
+
+    <table class="info-table">
+        <tr>
+            <td width="50%">
+                <strong>NAME:</strong> {{ job.customer.name|upper }}<br>
+                <strong>CONTACT NO. #:</strong> {{ job.customer.phone_number }}<br>
+                <strong>REGISTRATION NO. #:</strong> {{ job.vehicle.number_plate|upper }}
+            </td>
+            <td width="50%" align="left" style="padding-left: 20px;">
+                <strong>INVOICE NO.:</strong> #{{ invoice.id }}<br>
+                <strong>DATE:</strong> {{ invoice.created_at|date:"d-m-Y" }}<br>
+                <strong>MAKE &amp; MODEL:</strong> {{ job.vehicle.make|upper }} {{ job.vehicle.model|upper }}<br>
+                {% if job.mileage %}<strong>MILEAGE:</strong> {{ job.mileage }}<br>{% endif %}
+            </td>
+        </tr>
+    </table>
+
+    <table class="details-table">
+        <thead>
+            <tr>
+                <th style="width: 7%;">Sr.</th>
+                <th style="width: 48%;">Description</th>
+                <th style="width: 15%;">Type</th>
+                <th style="width: 10%;">Qty</th>
+                <th style="width: 20%;">Amount (Rs.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for jobpart in job.job_parts.all %}
+            <tr class="part-row">
+                <td class="text-center">{{ forloop.counter }}</td>
+                <td><strong>{{ jobpart.part.name }}</strong>{% if jobpart.part.company_name %} <span
+                        style="color:#64748b; font-size:11px;">({{ jobpart.part.company_name }})</span>{% endif %}</td>
+                <td class="text-center"><span style="color:#475569; font-weight:bold;">Part</span></td>
+                <td class="text-center">{{ jobpart.quantity }}</td>
+                <td class="text-right"><strong>{{ jobpart.get_cost|floatformat:2 }}</strong></td>
+            </tr>
+            {% endfor %}
+
+            {% for jl in job.job_labours.all %}
+            <tr class="labour-row">
+                <td class="text-center">{{ job.job_parts.all|length|add:forloop.counter }}</td>
+                <td><strong>{{ jl.description }}</strong></td>
+                <td class="text-center"><span style="color:#0284c7; font-weight:bold;">Labour</span></td>
+                <td class="text-center">—</td>
+                <td class="text-right" style="color:#0369a1;"><strong>{{ jl.cost|floatformat:2 }}</strong></td>
+            </tr>
+            {% endfor %}
+
+            {% if job.job_parts.all %}
+            <tr style="background-color: #f8fafc; font-weight: bold; color: #334155;">
+                <td colspan="4" class="text-right"><strong>Total Parts Charge:</strong></td>
+                <td class="text-right"><strong>Rs. {{ job.total_parts_cost|floatformat:2 }}</strong></td>
+            </tr>
+            {% endif %}
+
+            {% if job.job_labours.all %}
+            <tr class="total-labour-row">
+                <td colspan="4" class="text-right"><strong>Total Labour Charge:</strong></td>
+                <td class="text-right"><strong>Rs. {{ job.total_labour_cost|floatformat:2 }}</strong></td>
+            </tr>
+            {% endif %}
+
+            <tr class="grand-total-row">
+                <td colspan="4" class="text-right"><strong>Grand Total:</strong></td>
+                <td class="text-right"><strong>Rs. {{ invoice.total_amount|floatformat:2 }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="footer-address">
+        Plot # 195-A, Baloch Colony, Opp. City School, Shahr-e-Faisal, Karachi.
+    </div>
+</body>
+
+</html>

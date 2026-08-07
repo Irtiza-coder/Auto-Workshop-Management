@@ -1,0 +1,303 @@
+{% extends 'core/base.html' %}
+{% block title %}Inventory — AutoShop Pro{% endblock %}
+
+{% block content %}
+<!-- Page Header — matches Inventory.tsx PageHeader -->
+<div class="page-header">
+  <div>
+    <div class="page-header-breadcrumb">Parts &amp; Supplies</div>
+    <h1 class="page-header-title">Inventory</h1>
+  </div>
+  <div class="page-header-actions">
+    <a href="{% url 'export_inventory_csv' %}" class="btn btn-outline btn-sm">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Export CSV
+    </a>
+    <button class="btn btn-primary btn-sm" onclick="showModal('addPartModal')">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Part
+    </button>
+  </div>
+</div>
+
+<div class="card">
+  <!-- Search + Low Stock toggle -->
+  <form method="get" id="inventoryFilterForm" onsubmit="return false;">
+    <div style="display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; padding:16px 24px; border-bottom:1px solid #FAFAF9; gap:12px;">
+      <div class="search-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" name="q" id="inventorySearch" value="{{ query }}" placeholder="Live search by name, brand, category…" class="form-control">
+      </div>
+      <label style="display:flex; align-items:center; gap:8px; font-size:0.875rem; color:#57534E; cursor:pointer; font-weight:600;">
+        <label class="toggle-wrap">
+          <input type="checkbox" name="low_stock" value="1" {% if low_stock_filtered %}checked{% endif %} onchange="this.form.submit()">
+          <div class="toggle-track"></div>
+          <div class="toggle-thumb"></div>
+        </label>
+        <span {% if low_stock_filtered %}style="color:#DC2626;"{% endif %}>Low stock only</span>
+      </label>
+    </div>
+  </form>
+
+  <!-- Table -->
+  {% if parts %}
+  <div class="table-wrap">
+    <table class="figma-table" id="inventoryTable">
+      <thead>
+        <tr>
+          <th>Part Name</th>
+          <th>Brand</th>
+          <th>Category</th>
+          <th>Qty</th>
+          <th>Buying Price</th>
+          <th>Selling Price</th>
+          <th>Margin</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for part in parts %}
+        <tr>
+          <td>
+            <div>
+              <span style="font-weight:500; color:#292524;">{{ part.name }}</span>
+              {% if part.is_low_stock %}
+              <div style="margin-top:2px;"><span class="badge-low-stock">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>
+                Low Stock
+              </span></div>
+              {% endif %}
+            </div>
+          </td>
+          <td style="color:#78716C;">{{ part.company_name|default:"—" }}</td>
+          <td><span class="badge-cat">{{ part.category }}</span></td>
+          <td><span style="font-weight:600; {% if part.is_low_stock %}color:#DC2626;{% else %}color:#292524;{% endif %}">{{ part.quantity }}</span></td>
+          <td>Rs. {{ part.buying_price }}</td>
+          <td style="font-weight:500;">Rs. {{ part.price }}</td>
+          <td>
+            {% if part.buying_price > 0 %}
+            <span class="margin-positive">{{ part.profit_margin_percent|floatformat:0 }}%</span>
+            {% else %}<span style="color:#A8A29E;">—</span>{% endif %}
+          </td>
+          <td>
+            <div style="display:flex; align-items:center; gap:4px;">
+              <button type="button" onclick="openEditPart({{ part.pk }}, '{{ part.name|escapejs }}', '{{ part.company_name|escapejs }}', '{{ part.category }}', {{ part.quantity }}, {{ part.buying_price }}, {{ part.price }})" class="btn-icon-edit">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              </button>
+              <form method="post" style="display:inline;" onsubmit="return confirm('Delete this part?')">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="delete_part">
+                <input type="hidden" name="part_id" value="{{ part.pk }}">
+                <button type="submit" class="btn-icon-danger">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+    </div>
+    <p class="empty-title">No parts found</p>
+    <p class="empty-desc">Try a different search or add a new part.</p>
+    <button onclick="showModal('addPartModal')" class="btn btn-primary btn-sm" style="margin-top:16px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add Part
+    </button>
+  </div>
+  {% endif %}
+</div>
+
+<!-- Add Part Modal — matches Image 1 with Oil Volume field -->
+<div id="addPartModal" style="display:none; position:fixed; inset:0; z-index:50; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px);" onclick="if(event.target===this)hideModal('addPartModal')">
+  <div class="modal-box">
+    <div class="modal-header-branded">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="modal-header-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        </div>
+        <div class="modal-header-title">Add New Part</div>
+      </div>
+      <button class="modal-close" onclick="hideModal('addPartModal')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form method="post" style="display:flex; flex-direction:column; gap:12px;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="add_part">
+        <div class="form-field">
+          <label class="form-label">Part Name <span class="required">*</span></label>
+          <input type="text" name="name" id="addPartNameInput" class="form-control" placeholder="e.g. Engine Oil, Gear Oil, Brake Oil" required oninput="checkOilVolumeField(this.value, 'addOilVolumeSection')">
+        </div>
+
+        <!-- Oil Volume Field — matches Image 1 -->
+        <div class="form-field" id="addOilVolumeSection" style="display:none;">
+          <label class="form-label" style="display:flex; align-items:center; gap:6px; color:#2563EB; font-weight:700;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            Oil Volume (in Liters)
+          </label>
+          <div style="display:flex; align-items:center;">
+            <input type="text" name="volume_liters" class="form-control" placeholder="e.g. 4 or 3.5" style="border-top-right-radius:0; border-bottom-right-radius:0;">
+            <span style="background:#2563EB; color:#fff; font-weight:700; padding:0 14px; height:40px; display:flex; align-items:center; border-top-right-radius:12px; border-bottom-right-radius:12px; font-size:0.875rem;">L</span>
+          </div>
+          <p style="font-size:0.72rem; color:#A8A29E; margin-top:4px;">Enter volume number (e.g. 4 or 3.5). "L" will be added automatically.</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-field">
+            <label class="form-label">Brand</label>
+            <input type="text" name="company_name" class="form-control" placeholder="e.g. Bosch">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Category</label>
+            <select name="category" class="form-control">
+              <option>Genuine</option><option>OEM</option><option>Aftermarket</option><option>Used</option><option>Local</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+          <div class="form-field">
+            <label class="form-label">Quantity</label>
+            <input type="number" name="quantity" class="form-control" placeholder="0" min="0">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Buying Price</label>
+            <input type="number" name="buying_price" class="form-control" placeholder="Rs." step="0.01" min="0">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Selling Price</label>
+            <input type="number" name="selling_price" class="form-control" placeholder="Rs." step="0.01" min="0">
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; padding-top:8px;">
+          <button type="button" class="btn btn-outline" style="flex:1;" onclick="hideModal('addPartModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Add Part</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Part Modal -->
+<div id="editPartModal" style="display:none; position:fixed; inset:0; z-index:50; align-items:center; justify-content:center; padding:16px; background:rgba(0,0,0,0.4); backdrop-filter:blur(4px);" onclick="if(event.target===this)hideModal('editPartModal')">
+  <div class="modal-box">
+    <div class="modal-header-branded">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div class="modal-header-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </div>
+        <div class="modal-header-title">Edit Part</div>
+      </div>
+      <button class="modal-close" onclick="hideModal('editPartModal')">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form method="post" id="editPartForm" style="display:flex; flex-direction:column; gap:12px;">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="update_part">
+        <input type="hidden" name="part_id" id="editPartId">
+        <div class="form-field">
+          <label class="form-label">Part Name <span class="required">*</span></label>
+          <input type="text" name="name" id="editPartName" class="form-control" required oninput="checkOilVolumeField(this.value, 'editOilVolumeSection')">
+        </div>
+
+        <!-- Oil Volume Field — matches Image 1 -->
+        <div class="form-field" id="editOilVolumeSection" style="display:none;">
+          <label class="form-label" style="display:flex; align-items:center; gap:6px; color:#2563EB; font-weight:700;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>
+            Oil Volume (in Liters)
+          </label>
+          <div style="display:flex; align-items:center;">
+            <input type="text" name="volume_liters" id="editPartVolume" class="form-control" placeholder="e.g. 4 or 3.5" style="border-top-right-radius:0; border-bottom-right-radius:0;">
+            <span style="background:#2563EB; color:#fff; font-weight:700; padding:0 14px; height:40px; display:flex; align-items:center; border-top-right-radius:12px; border-bottom-right-radius:12px; font-size:0.875rem;">L</span>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+          <div class="form-field">
+            <label class="form-label">Brand</label>
+            <input type="text" name="company_name" id="editPartBrand" class="form-control">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Category</label>
+            <select name="category" id="editPartCategory" class="form-control">
+              <option>Genuine</option><option>OEM</option><option>Aftermarket</option><option>Used</option><option>Local</option>
+            </select>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:12px;">
+          <div class="form-field">
+            <label class="form-label">Quantity</label>
+            <input type="number" name="quantity" id="editPartQty" class="form-control" min="0">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Buying Price</label>
+            <input type="number" name="buying_price" id="editPartBuying" class="form-control" step="0.01" min="0">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Selling Price</label>
+            <input type="number" name="selling_price" id="editPartSelling" class="form-control" step="0.01" min="0">
+          </div>
+        </div>
+        <div style="display:flex; gap:12px; padding-top:8px;">
+          <button type="button" class="btn btn-outline" style="flex:1;" onclick="hideModal('editPartModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary" style="flex:1;">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function openEditPart(id, name, brand, category, qty, buying, selling) {
+  document.getElementById('editPartId').value = id;
+  document.getElementById('editPartName').value = name;
+  document.getElementById('editPartBrand').value = brand;
+  document.getElementById('editPartQty').value = qty;
+  document.getElementById('editPartBuying').value = buying;
+  document.getElementById('editPartSelling').value = selling;
+  const sel = document.getElementById('editPartCategory');
+  for(let i=0; i<sel.options.length; i++) {
+    if(sel.options[i].value === category) { sel.selectedIndex = i; break; }
+  }
+  checkOilVolumeField(name, 'editOilVolumeSection');
+  showModal('editPartModal');
+}
+
+function checkOilVolumeField(val, secId) {
+  const sec = document.getElementById(secId);
+  if(!sec) return;
+  const lower = (val || '').toLowerCase();
+  if (lower.includes('oil') && !lower.includes('filter')) {
+    sec.style.display = 'block';
+  } else {
+    sec.style.display = 'none';
+  }
+}
+
+// Live real-time instant search
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('inventorySearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const q = this.value.toLowerCase().trim();
+      const rows = document.querySelectorAll('#inventoryTable tbody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+      });
+    });
+  }
+});
+</script>
+{% endblock %}

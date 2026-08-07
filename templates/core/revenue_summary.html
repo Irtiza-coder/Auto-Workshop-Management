@@ -1,0 +1,150 @@
+{% extends 'core/base.html' %}
+{% block title %}Revenue Summary — AutoShop Pro{% endblock %}
+
+{% block content %}
+<!-- Page Header — matches Revenue.tsx PageHeader line 37 -->
+<div class="page-header">
+  <div>
+    <div class="page-header-breadcrumb">Finance</div>
+    <h1 class="page-header-title">Revenue Summary</h1>
+  </div>
+</div>
+
+<!-- Period Tabs — matches Revenue.tsx lines 40-50 -->
+<div class="period-tabs">
+  <a href="?period=today" class="period-tab {% if period == 'today' %}active{% endif %}">Today</a>
+  <a href="?period=week" class="period-tab {% if period == 'week' %}active{% endif %}">Week</a>
+  <a href="?period=month" class="period-tab {% if period == 'month' or not period %}active{% endif %}">Month</a>
+  <a href="?period=all" class="period-tab {% if period == 'all' %}active{% endif %}">All</a>
+</div>
+
+<!-- Summary Stat Cards — matches Revenue.tsx lines 53-60 -->
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-bottom:24px;">
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#FFEDD5; color:#C2410C;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Total Billed</div>
+      <div class="stat-value">Rs. {{ total_bill_sum|floatformat:0 }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#D1FAE5; color:#10B981;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Total Profit</div>
+      <div class="stat-value">Rs. {{ total_profit_sum|floatformat:0 }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#DBEAFE; color:#3B82F6;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Parts Income</div>
+      <div class="stat-value">Rs. {{ total_parts_bill_sum|floatformat:0 }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#F3E8FF; color:#A855F7;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Labour Income</div>
+      <div class="stat-value">Rs. {{ total_labor_sum|floatformat:0 }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#CCFBF1; color:#0D9488;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Avg Profit / Job</div>
+      <div class="stat-value">Rs. {{ avg_profit_per_job|floatformat:0 }}</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="background:#FFEDD5; color:#EA580C;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Job Count</div>
+      <div class="stat-value">{{ job_count }}</div>
+    </div>
+  </div>
+</div>
+
+<!-- Invoice Breakdown Table — matches Revenue.tsx lines 63-103 -->
+<div class="card">
+  <div style="padding:20px 24px 16px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px;">
+    <div>
+      <h2 style="font-weight:700; color:#292524; font-size:1rem;">Invoice Breakdown</h2>
+      <p style="font-size:0.72rem; color:#A8A29E;">All invoices with revenue details</p>
+    </div>
+    <div class="search-wrap">
+      <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="text" id="revenueSearchInput" placeholder="Live search invoices…" class="form-control" style="width:220px;">
+    </div>
+  </div>
+  <div class="table-wrap">
+    <table class="figma-table" id="revenueTable">
+      <thead>
+        <tr>
+          <th>Job #</th>
+          <th>Customer</th>
+          <th>Vehicle</th>
+          <th>Parts Billed</th>
+          <th>Labour</th>
+          <th>Total</th>
+          <th>Payment</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in rows %}
+        <tr>
+          <td><span style="font-weight:600; color:#C2410C;">#{{ row.job.pk }}</span></td>
+          <td style="font-weight:500; color:#292524;">{{ row.job.customer.name }}</td>
+          <td style="color:#78716C;">{{ row.job.vehicle.number_plate }}</td>
+          <td>Rs. {{ row.parts_bill|floatformat:0 }}</td>
+          <td>Rs. {{ row.labor|floatformat:0 }}</td>
+          <td style="font-weight:700; color:#292524;">Rs. {{ row.bill_total|floatformat:0 }}</td>
+          <td>
+            {% if row.invoice.job_card.payment_status == 'Paid' %}<span class="badge badge-paid">Paid</span>
+            {% elif row.invoice.job_card.payment_status == 'Partial' %}<span class="badge badge-partial">Partial</span>
+            {% else %}<span class="badge badge-unpaid">Unpaid</span>{% endif %}
+          </td>
+          <td style="font-size:0.72rem; color:#A8A29E;">{{ row.invoice.created_at|date:"Y-m-d" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="8" style="text-align:center; padding:32px; color:#A8A29E;">No invoices yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <div style="display:flex; justify-content:space-between; padding:12px 24px; border-top:1px solid #FAFAF9; background:#FAFAF9; border-radius:0 0 16px 16px;">
+    <span style="font-size:0.875rem; font-weight:600; color:#57534E;">{{ rows|length }} invoices</span>
+    <span style="font-size:0.875rem; font-weight:700; color:#292524;">Total: Rs. {{ total_bill_sum|floatformat:0 }}</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('revenueSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      const q = this.value.toLowerCase().trim();
+      const rows = document.querySelectorAll('#revenueTable tbody tr');
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(q) ? '' : 'none';
+      });
+    });
+  }
+});
+</script>
+{% endblock %}

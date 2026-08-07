@@ -1,0 +1,253 @@
+{% extends 'core/base.html' %}
+{% block title %}Dashboard — AutoShop Pro{% endblock %}
+
+{% block content %}
+<!-- Dashboard header -->
+<div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+  <div>
+    <p class="dash-greeting-sub">Good morning,</p>
+    <h1 class="dash-greeting-main" style="font-size:1.5rem; margin-bottom:0;">{{ user.username }} 👋</h1>
+  </div>
+  <a href="{% url 'add_vehicle' %}" class="btn btn-primary btn-sm">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    New Walk-in Job
+  </a>
+</div>
+
+<!-- Stat Cards Row 1 — 4 columns -->
+<div class="grid-2" style="grid-template-columns: repeat(4,1fr); gap:12px; margin-bottom:12px;">
+
+  <!-- Jobs Today -->
+  <div class="stat-card" style="padding:16px;">
+    <div class="stat-icon" style="background:#FFEDD5; color:#C2410C;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="9" x2="15" y2="9"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="11" y2="17"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Jobs Today</div>
+      <div class="stat-value" style="font-size:1.25rem;">{{ total_jobs_today }}</div>
+      <div class="stat-sub">Active this session</div>
+    </div>
+  </div>
+
+  <!-- Pending -->
+  <div class="stat-card" style="padding:16px;">
+    <div class="stat-icon" style="background:#FFEDD5; color:#EA580C;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Pending</div>
+      <div class="stat-value" style="font-size:1.25rem;">{{ pending_jobs }}</div>
+      <div class="stat-sub">Awaiting start</div>
+    </div>
+  </div>
+
+  <!-- In Progress -->
+  <div class="stat-card" style="padding:16px;">
+    <div class="stat-icon" style="background:#DBEAFE; color:#3B82F6;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">In Progress</div>
+      <div class="stat-value" style="font-size:1.25rem;">{{ in_progress_jobs }}</div>
+      <div class="stat-sub">Currently active</div>
+    </div>
+  </div>
+
+  <!-- Completed -->
+  <div class="stat-card" style="padding:16px;">
+    <div class="stat-icon" style="background:#D1FAE5; color:#10B981;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Completed</div>
+      <div class="stat-value" style="font-size:1.25rem;">{{ completed_jobs }}</div>
+      <div class="stat-sub">This month</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Stat Cards Row 2 — 3 columns -->
+<div style="display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-bottom:20px;">
+
+  <!-- Total Customers -->
+  <div class="stat-card" style="padding:16px;">
+    <div class="stat-icon" style="background:#F3E8FF; color:#A855F7;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Total Customers</div>
+      <div class="stat-value" style="font-size:1.25rem;">{{ total_customers }}</div>
+      <div class="stat-sub">Registered accounts</div>
+    </div>
+  </div>
+
+  <!-- Low Stock Parts -->
+  <div class="stat-card" style="padding:16px;">
+    <div class="stat-icon" style="background:#FEE2E2; color:#EF4444;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Low Stock Parts</div>
+      <div class="stat-value" style="font-size:1.25rem;">{{ low_stock_parts }}</div>
+      <div class="stat-sub">Need restocking</div>
+    </div>
+  </div>
+
+  <!-- Month's Profit -->
+  <div class="stat-card" style="padding:16px;">
+    <div class="stat-icon" style="background:#CCFBF1; color:#0D9488;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+    </div>
+    <div>
+      <div class="stat-label">Month's Profit</div>
+      <div class="stat-value" style="font-size:1.25rem;">Rs. {{ total_revenue|floatformat:0 }}</div>
+      <div class="stat-sub">Current month</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Chart Row — Fixed compact height -->
+<div style="display:grid; grid-template-columns:3fr 2fr; gap:16px; margin-bottom:20px;">
+
+  <!-- Revenue Trend Chart -->
+  <div class="card" style="padding:20px;">
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+      <div>
+        <h2 style="font-weight:700; color:#292524; font-size:0.95rem;">Revenue Trend</h2>
+        <p style="font-size:0.72rem; color:#A8A29E;">Last 6 months — workshop profit (Rs.)</p>
+      </div>
+    </div>
+    <div style="position:relative; height:180px; width:100%;">
+      <canvas id="profitChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Jobs per Month Bar Chart -->
+  <div class="card" style="padding:20px;">
+    <div style="margin-bottom:12px;">
+      <h2 style="font-weight:700; color:#292524; font-size:0.95rem;">Jobs per Month</h2>
+      <p style="font-size:0.72rem; color:#A8A29E;">Volume over 6 months</p>
+    </div>
+    <div style="position:relative; height:180px; width:100%;">
+      <canvas id="jobsChart"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<!-- Recent Job Cards -->
+<div class="card" style="margin-top:0;">
+  <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px 12px;">
+    <h2 style="font-weight:700; color:#292524; font-size:1rem;">Recent Job Cards</h2>
+    <a href="{% url 'jobcard_list' %}" class="link-primary">View all →</a>
+  </div>
+  <div class="table-wrap">
+    <table class="figma-table">
+      <thead>
+        <tr>
+          <th>Job #</th>
+          <th>Customer</th>
+          <th>Vehicle</th>
+          <th>Status</th>
+          <th>Payment</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in recent_jobs %}
+        <tr class="clickable" data-href="{% url 'jobcard_detail' job.pk %}">
+          <td><span style="font-weight:600; color:#C2410C;">#{{ job.pk }}</span></td>
+          <td style="font-weight:500; color:#292524;">{{ job.customer.name }}</td>
+          <td style="color:#78716C;">{{ job.vehicle.number_plate }}</td>
+          <td>
+            {% if job.status == 'Pending' %}<span class="badge badge-pending">Pending</span>
+            {% elif job.status == 'In Progress' %}<span class="badge badge-progress">In Progress</span>
+            {% else %}<span class="badge badge-completed">Completed</span>{% endif %}
+          </td>
+          <td>
+            {% if job.payment_status == 'Paid' %}<span class="badge badge-paid">Paid</span>
+            {% elif job.payment_status == 'Partial' %}<span class="badge badge-partial">Partial</span>
+            {% else %}<span class="badge badge-unpaid">Unpaid</span>{% endif %}
+          </td>
+          <td style="color:#A8A29E; font-size:0.75rem;">{{ job.created_at|date:"Y-m-d" }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="6" style="text-align:center; padding:24px; color:#A8A29E;">No job cards yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+const labels = {{ monthly_labels|safe }};
+const profits = {{ monthly_profits|safe }};
+const jobsCount = {{ monthly_jobs|safe }};
+
+// Area chart (profit)
+const ctx1 = document.getElementById('profitChart').getContext('2d');
+const grad = ctx1.createLinearGradient(0, 0, 0, 180);
+grad.addColorStop(0.05, 'rgba(194,65,12,0.25)');
+grad.addColorStop(0.95, 'rgba(194,65,12,0)');
+
+new Chart(ctx1, {
+  type: 'line',
+  data: {
+    labels,
+    datasets: [{
+      data: profits,
+      borderColor: '#C2410C',
+      backgroundColor: grad,
+      fill: true,
+      tension: 0.4,
+      borderWidth: 2.5,
+      pointBackgroundColor: '#C2410C',
+      pointRadius: 3,
+      pointHoverRadius: 5
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#F0EDE9' }, ticks: { color: '#A8A29E', font: { size: 11 } } },
+      x: { grid: { display: false }, ticks: { color: '#A8A29E', font: { size: 11 } } }
+    }
+  }
+});
+
+// Bar chart (jobs)
+const ctx2 = document.getElementById('jobsChart').getContext('2d');
+new Chart(ctx2, {
+  type: 'bar',
+  data: {
+    labels,
+    datasets: [{
+      data: jobsCount,
+      backgroundColor: '#0F766E',
+      borderRadius: 5,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: '#F0EDE9' }, ticks: { color: '#A8A29E', font: { size: 11 } } },
+      x: { grid: { display: false }, ticks: { color: '#A8A29E', font: { size: 11 } } }
+// Row click navigation
+document.querySelectorAll('tr.clickable').forEach(row => {
+  row.addEventListener('click', function () {
+    const href = this.getAttribute('data-href');
+    if (href) window.location.href = href;
+  });
+});
+</script>
+{% endblock %}

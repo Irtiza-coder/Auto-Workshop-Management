@@ -1,0 +1,37 @@
+# Python & Virtual Environments
+venv/
+ENV/
+env/
+*.py[cod]
+*$py.class
+__pycache__/
+
+# Django
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+*.log
+
+# Node & Mobile App
+mobile_app/node_modules/
+mobile_app/dist/
+mobile_app/.idea/
+mobile_app/android/.gradle/
+mobile_app/android/build/
+mobile_app/android/app/build/
+
+# Archives & Large Binary Builds
+*.zip
+*.apk
+*.aab
+
+# IDE & OS Files
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Environment Variables
+.env
+.env.local

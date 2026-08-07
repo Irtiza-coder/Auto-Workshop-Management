@@ -1,0 +1,93 @@
+{% extends 'core/base.html' %}
+{% block title %}New Walk-in Job — AutoShop Pro{% endblock %}
+
+{% block content %}
+<!-- Back link — matches NewWalkinJob.tsx lines 56-59 -->
+<button onclick="history.back()" class="back-link">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+  Back
+</button>
+
+<!-- Page Header — matches PageHeader + description lines 60-64 -->
+<div style="margin-bottom:24px;">
+  <p style="font-size:0.72rem; font-weight:600; text-transform:uppercase; letter-spacing:0.05em; color:#A8A29E; margin-bottom:4px;">QUICK ENTRY</p>
+  <h1 style="font-size:1.5rem; font-weight:700; color:#292524; margin-bottom:8px;">New Walk-in Job</h1>
+  <p style="font-size:0.875rem; color:#A8A29E;">Fill in customer and vehicle details to log a new walk-in. All fields marked <span style="color:#EF4444;">*</span> are required.</p>
+</div>
+
+<form method="post" style="display:flex; flex-direction:column; gap:16px;">
+  {% csrf_token %}
+
+  <!-- Customer Details Card — matches NewWalkinJob.tsx lines 68-83 -->
+  <div class="card" style="padding:24px;">
+    <div class="section-header">
+      <div class="section-icon section-icon-orange">
+        <!-- User icon -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </div>
+      <h2 class="section-title">Customer Details</h2>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div class="form-field">
+        <label class="form-label">Customer Name <span class="required">*</span></label>
+        <input type="text" name="customer_name" class="form-control" placeholder="e.g. Kwame Asante" value="{{ request.POST.customer_name }}" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Phone Number <span class="required">*</span></label>
+        <input type="text" name="customer_phone" class="form-control" placeholder="e.g. 0244-123-456" value="{{ request.POST.customer_phone }}" required>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vehicle Details Card — matches NewWalkinJob.tsx lines 86-107 -->
+  <div class="card" style="padding:24px;">
+    <div class="section-header">
+      <div class="section-icon section-icon-teal">
+        <!-- Car icon -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      </div>
+      <h2 class="section-title">Vehicle Details</h2>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px;">
+      <div class="form-field">
+        <label class="form-label">Make <span class="required">*</span></label>
+        <input type="text" name="vehicle_make" class="form-control" placeholder="e.g. Toyota" value="{{ request.POST.vehicle_make }}" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Model <span class="required">*</span></label>
+        <input type="text" name="vehicle_model" class="form-control" placeholder="e.g. Corolla" value="{{ request.POST.vehicle_model }}" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Number Plate <span class="required">*</span></label>
+        <input type="text" name="vehicle_plate" class="form-control" placeholder="e.g. GR-1234-19" value="{{ request.POST.vehicle_plate }}" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Year</label>
+        <input type="text" name="vehicle_year" class="form-control" placeholder="e.g. 2018" value="{{ request.POST.vehicle_year }}">
+      </div>
+    </div>
+  </div>
+
+  <!-- Problem Description Card — matches NewWalkinJob.tsx lines 110-126 -->
+  <div class="card" style="padding:24px;">
+    <div class="section-header">
+      <div class="section-icon" style="background:#FFEDD5; color:#C2410C;">
+        <!-- FileText icon -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <h2 class="section-title">Problem Description</h2>
+    </div>
+    <div class="form-field">
+      <label class="form-label">Describe the issue <span class="required">*</span></label>
+      <textarea name="problem_description" class="form-control" rows="4"
+        placeholder="e.g. Engine overheating, coolant leaking from front. Customer reports issue started 2 days ago." required>{{ request.POST.problem_description }}</textarea>
+    </div>
+  </div>
+
+  <!-- Buttons — matches NewWalkinJob.tsx lines 128-131 -->
+  <div style="display:flex; justify-content:flex-end; gap:12px;">
+    <button type="button" onclick="history.back()" class="btn btn-outline">Cancel</button>
+    <button type="submit" class="btn btn-primary">Create Job Card</button>
+  </div>
+</form>
+{% endblock %}

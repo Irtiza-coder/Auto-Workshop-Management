@@ -1,0 +1,168 @@
+{% extends 'core/base.html' %}
+{% block title %}Job Cards — AutoShop Pro{% endblock %}
+
+{% block content %}
+<!-- Page Header — matches JobCards.tsx PageHeader -->
+<div class="page-header">
+  <div>
+    <div class="page-header-breadcrumb">Workshop</div>
+    <h1 class="page-header-title">Job Cards</h1>
+  </div>
+  <div class="page-header-actions">
+    <a href="{% url 'add_vehicle' %}" class="btn btn-primary btn-sm">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      New Job
+    </a>
+  </div>
+</div>
+
+<!-- Card with filter tabs + search + table — matches JobCards.tsx lines 42-114 -->
+<div class="card">
+  <!-- Filter bar -->
+  <div
+    style="padding:20px 24px 16px; display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; border-bottom:1px solid #FAFAF9;">
+    <!-- Status Tabs -->
+    <div class="status-tabs">
+      <a href="?status=All{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+        class="status-tab {% if status_filter == 'All' or not status_filter %}active{% endif %}">
+        All <span class="status-tab-count">{{ counts.all }}</span>
+      </a>
+      <a href="?status=Pending{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+        class="status-tab {% if status_filter == 'Pending' %}active{% endif %}">
+        Pending <span class="status-tab-count">{{ counts.pending }}</span>
+      </a>
+      <a href="?status=In+Progress{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+        class="status-tab {% if status_filter == 'In Progress' %}active{% endif %}">
+        In Progress <span class="status-tab-count">{{ counts.in_progress }}</span>
+      </a>
+      <a href="?status=Completed{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}"
+        class="status-tab {% if status_filter == 'Completed' %}active{% endif %}">
+        Completed <span class="status-tab-count">{{ counts.completed }}</span>
+      </a>
+    </div>
+
+    <!-- Search Bar -->
+    <form method="get" onsubmit="return false;" style="display:inline-block;">
+      {% if status_filter %}<input type="hidden" name="status" value="{{ status_filter }}">{% endif %}
+      <div class="search-wrap">
+        <svg class="search-icon" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
+          <circle cx="11" cy="11" r="8" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <input type="text" name="q" id="jobcardSearchInput" value="{{ request.GET.q }}"
+          placeholder="Live search by customer, plate, or job #…" class="form-control">
+      </div>
+    </form>
+  </div>
+
+  <!-- Table -->
+  {% if jobs %}
+  <div class="table-wrap">
+    <table class="figma-table" id="jobcardTable">
+      <thead>
+        <tr>
+          <th>Job #</th>
+          <th>Customer</th>
+          <th>Vehicle</th>
+          <th>Problem</th>
+          <th>Status</th>
+          <th>Payment</th>
+          <th>Date</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for job in jobs %}
+        <tr class="clickable" data-href="{% url 'jobcard_detail' job.pk %}">
+          <td><span style="font-weight:600; color:#C2410C;">#{{ job.pk }}</span></td>
+          <td style="font-weight:500; color:#292524;">{{ job.customer.name }}</td>
+          <td>
+            <div>
+              <p style="font-weight:500; color:#44403C; margin:0;">{{ job.vehicle.number_plate }}</p>
+              <p style="font-size:0.72rem; color:#A8A29E; margin:0;">{{ job.vehicle.make }} {{ job.vehicle.model }}</p>
+            </div>
+          </td>
+          <td style="max-width:180px;">
+            <p
+              style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font-size:0.75rem; color:#78716C; margin:0;">
+              {{ job.problem_description }}</p>
+          </td>
+          <td>
+            {% if job.status == 'Pending' %}<span class="badge badge-pending">Pending</span>
+            {% elif job.status == 'In Progress' %}<span class="badge badge-progress">In Progress</span>
+            {% else %}<span class="badge badge-completed">Completed</span>{% endif %}
+          </td>
+          <td>
+            {% if job.payment_status == 'Paid' %}<span class="badge badge-paid">Paid</span>
+            {% elif job.payment_status == 'Partial' %}<span class="badge badge-partial">Partial</span>
+            {% else %}<span class="badge badge-unpaid">Unpaid</span>{% endif %}
+          </td>
+          <td style="font-size:0.72rem; color:#A8A29E;">{{ job.created_at|date:"Y-m-d" }}</td>
+          <td>
+            <a href="{% url 'jobcard_detail' job.pk %}" onclick="event.stopPropagation()" class="link-primary">Open
+              →</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div class="empty-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <rect x="5" y="2" width="14" height="20" rx="2" />
+        <line x1="9" y1="9" x2="15" y2="9" />
+        <line x1="9" y1="13" x2="15" y2="13" />
+      </svg>
+    </div>
+    <p class="empty-title">No job cards found</p>
+    <p class="empty-desc">{% if request.GET.q %}Try a different search.{% else %}Create your first job card.{% endif %}
+    </p>
+    {% if not request.GET.q %}
+    <a href="{% url 'add_vehicle' %}" class="btn btn-primary btn-sm" style="margin-top:16px;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19" />
+        <line x1="5" y1="12" x2="19" y2="12" />
+      </svg>
+      New Job
+    </a>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <div class="table-footer">
+    <span>{{ jobs|length }} job cards</span>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const searchInput = document.getElementById('jobcardSearchInput');
+    if (searchInput) {
+      searchInput.addEventListener('input', function () {
+        const q = this.value.toLowerCase().trim();
+        const rows = document.querySelectorAll('#jobcardTable tbody tr');
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(q) ? '' : 'none';
+        });
+      });
+    }
+
+    // Row click navigation
+    document.querySelectorAll('#jobcardTable tbody tr.clickable').forEach(row => {
+      row.addEventListener('click', function () {
+        const href = this.getAttribute('data-href');
+        if (href) window.location.href = href;
+      });
+    });
+  });
+</script>
+{% endblock %}

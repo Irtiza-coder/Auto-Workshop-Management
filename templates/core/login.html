@@ -1,0 +1,93 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light">
+  <title>Sign In — AutoShop Pro</title>
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body class="auth-page">
+<div class="login-wrapper">
+
+  <!-- Left 30% panel -->
+  <div class="login-sidebar">
+    <!-- Logo at top -->
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom: 40px;">
+      <div style="width:40px; height:40px; background:rgba(255,255,255,0.2); border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      </div>
+      <div>
+        <p style="font-weight:700; font-size:1.125rem; color:#fff;">AutoShop Pro</p>
+        <p style="font-size:0.72rem; color:#FDBA74;">Workshop Manager</p>
+      </div>
+    </div>
+
+    <!-- Headline centered -->
+    <div style="margin: auto 0;">
+      <h2 style="font-size:2rem; font-weight:700; line-height:1.3; margin-bottom:14px;">Manage your workshop with confidence.</h2>
+      <p style="color:#FFEDD5; font-size:0.925rem; line-height:1.6;">Track jobs, manage inventory, generate invoices — everything your auto shop needs in one friendly tool.</p>
+    </div>
+  </div>
+
+  <!-- Right 70% panel -->
+  <div class="login-main">
+    <div class="login-card">
+
+      <!-- Mobile logo -->
+      <div style="display:none; align-items:center; gap:12px; margin-bottom:32px; justify-content:center;" id="mobileLogo">
+        <div style="width:40px; height:40px; background:#C2410C; border-radius:12px; display:flex; align-items:center; justify-content:center;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+        </div>
+        <div>
+          <p style="font-weight:700; color:#292524;">AutoShop Pro</p>
+          <p style="font-size:0.72rem; color:#A8A29E;">Workshop Manager</p>
+        </div>
+      </div>
+
+      <h1 style="font-size:1.5rem; font-weight:700; color:#292524; margin-bottom:4px;">Welcome back!</h1>
+      <p style="font-size:0.875rem; color:#A8A29E; margin-bottom:32px;">Sign in to your workshop account</p>
+
+      {% if form.non_field_errors %}
+      <div class="toast toast-error" style="margin-bottom:16px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span>{{ form.non_field_errors.0 }}</span>
+      </div>
+      {% endif %}
+
+      <form method="post" style="display:flex; flex-direction:column; gap:16px;">
+        {% csrf_token %}
+        <div class="form-field">
+          <label class="form-label">Username <span class="required">*</span></label>
+          <input type="text" name="username" class="form-control no-uppercase" placeholder="e.g. kwame.admin" value="{{ form.username.value|default:'' }}" autocomplete="username" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Password <span class="required">*</span></label>
+          <div style="position:relative;">
+            <input type="password" name="password" id="pwField" class="form-control no-uppercase" placeholder="Your password" autocomplete="current-password" required style="padding-right:40px;">
+            <button type="button" onclick="const f=document.getElementById('pwField'); f.type=f.type==='password'?'text':'password';"
+              style="position:absolute; right:12px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:#A8A29E;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end;">
+          <a href="{% url 'forgot_password' %}" class="link-primary">Forgot password?</a>
+        </div>
+        <button type="submit" class="btn btn-primary btn-lg" style="width:100%;">Sign In</button>
+      </form>
+
+      <p style="text-align:center; font-size:0.875rem; color:#A8A29E; margin-top:24px;">
+        Don't have an account?
+        <a href="{% url 'signup' %}" style="color:#C2410C; font-weight:600; text-decoration:none;">Sign up</a>
+      </p>
+    </div>
+  </div>
+</div>
+<script>
+// Show mobile logo on small screens
+if(window.innerWidth < 1024){ document.getElementById('mobileLogo').style.display='flex'; }
+</script>
+</body>
+</html>
