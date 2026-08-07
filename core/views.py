@@ -853,6 +853,19 @@ def settings_view(request):
     return render(request, 'core/settings.html', {'all_users': all_users})
 
 
+@login_required
+def seed_demo_data_view(request):
+    """Populate realistic dummy customers, vehicles, inventory parts, and job cards for Irtiza."""
+    from seed_data import seed
+    try:
+        seed()
+        messages.success(request, "🎉 Dummy data for Irtiza (Customers, Vehicles, Parts, Job Cards, Invoices) populated successfully!")
+    except Exception as e:
+        messages.error(request, f"Error seeding dummy data: {e}")
+    return redirect('dashboard')
+
+
+
 
 
 
