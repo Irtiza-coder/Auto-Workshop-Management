@@ -44,7 +44,7 @@ urlpatterns = [
 
     # Settings
     path('settings/', views.settings_view, name='settings'),
-    path('seed-demo-data/', views.seed_demo_data_view, name='seed_demo_data'),
+
 
 
     # --- REST API ENDPOINTS FOR MOBILE APP ---
