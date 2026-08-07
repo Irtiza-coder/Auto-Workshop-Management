@@ -2,6 +2,7 @@ services:
   - type: web
     name: autoshop-pro-django
     env: python
+    plan: free
     buildCommand: "./build.sh"
     startCommand: "gunicorn workshop_system.wsgi:application"
     envVars:
@@ -22,3 +23,4 @@ databases:
   - name: autoshop-db
     databaseName: autoshop
     user: autoshop_user
+    plan: free
