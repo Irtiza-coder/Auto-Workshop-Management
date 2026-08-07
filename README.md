@@ -75,10 +75,7 @@ Follow the prompts to enter your admin **Username**, **Email**, and **Password**
 ```bash
 python manage.py runserver
 ```
-
-Open your browser and visit:
-* 🌐 **Workshop App**: [http://127.0.0.1:8000/login/](http://127.0.0.1:8000/login/)
-* ⚙️ **Django Admin Panel**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+It gives you Link Of The Browser Where Project Run.
 
 ---
 
