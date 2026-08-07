@@ -75,7 +75,7 @@ Follow the prompts to enter your admin **Username**, **Email**, and **Password**
 ```bash
 python manage.py runserver
 ```
-It gives you Link Of the browser where project run.
+It gives you Link of the browser where project run.
 
 ---
 
