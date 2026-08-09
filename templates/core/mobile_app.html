@@ -1,6 +1,7 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -13,6 +14,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'mobile_app/assets/index-1dIuMo_i.css' %}">
 </head>
+
 <body style="margin:0; padding:0; background:#0D0D0D; font-family:'Nunito', sans-serif;">
   <div id="root"></div>
   <script type="module" src="{% static 'mobile_app/assets/index-DAsKH6mX.js' %}"></script>
@@ -20,7 +22,7 @@
 
   <script>
     if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('/static/sw.js').catch(function(){});
+      navigator.serviceWorker.register('/static/sw.js').catch(function () { });
     }
   </script>
 </body>

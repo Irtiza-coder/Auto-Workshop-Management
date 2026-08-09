@@ -328,6 +328,68 @@ def api_services(request):
     return api_response(svc_data)
 
 @csrf_exempt
+def api_add_inventory(request):
+    if request.method != 'POST':
+        return api_response(message="POST required", success=False, status=405)
+    try:
+        user = get_user_or_default(request)
+        body = json.loads(request.body.decode('utf-8'))
+        name = body.get('name', '').strip()
+        company = body.get('company', '').strip()
+        category = body.get('category', 'Genuine').strip()
+        qty = int(body.get('qty', 0))
+        buying_price = Decimal(str(body.get('buying_price', 0)))
+        price = Decimal(str(body.get('price', 0)))
+        volume_liters = body.get('volume_liters', '').strip()
+
+        if not name or price <= 0:
+            return api_response(message="Part name and selling price > 0 are required", success=False, status=400)
+
+        # Handle oil volume liters in part name if applicable
+        if volume_liters and 'oil' in name.lower() and 'filter' not in name.lower():
+            vol_str = f"{volume_liters}L" if not volume_liters.lower().endswith('l') else volume_liters
+            if vol_str.lower() not in name.lower():
+                name = f"{name} ({vol_str})"
+
+        part = Part.objects.create(
+            user=user,
+            name=name,
+            company_name=company,
+            category=category,
+            quantity=qty,
+            buying_price=buying_price,
+            price=price
+        )
+        return api_response({'id': part.id, 'name': part.name}, message=f"Part '{part.name}' added successfully!")
+    except Exception as e:
+        return api_response(message=str(e), success=False, status=400)
+
+@csrf_exempt
+def api_add_service(request):
+    if request.method != 'POST':
+        return api_response(message="POST required", success=False, status=405)
+    try:
+        user = get_user_or_default(request)
+        body = json.loads(request.body.decode('utf-8'))
+        name = body.get('name', '').strip()
+        price = Decimal(str(body.get('price', 0)))
+        desc = body.get('desc', '').strip()
+
+        if not name or price <= 0:
+            return api_response(message="Service name and price > 0 are required", success=False, status=400)
+
+        service = Service.objects.create(
+            user=user,
+            name=name,
+            default_price=price,
+            description=desc
+        )
+        return api_response({'id': service.id, 'name': service.name}, message=f"Service '{service.name}' added successfully!")
+    except Exception as e:
+        return api_response(message=str(e), success=False, status=400)
+
+
+@csrf_exempt
 def api_sync(request):
     """Batch Sync Endpoint for Offline Actions Queue"""
     if request.method != 'POST':

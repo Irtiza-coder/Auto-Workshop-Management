@@ -58,7 +58,9 @@ urlpatterns = [
     path('api/jobs/<int:pk>/status/',    views_api.api_update_status,  name='api_update_status'),
     path('api/customers/',               views_api.api_customers,      name='api_customers'),
     path('api/inventory/',               views_api.api_inventory,      name='api_inventory'),
+    path('api/inventory/add/',           views_api.api_add_inventory,  name='api_add_inventory'),
     path('api/services/',                views_api.api_services,       name='api_services'),
+    path('api/services/add/',             views_api.api_add_service,    name='api_add_service'),
     path('api/sync/',                    views_api.api_sync,           name='api_sync'),
 
     # --- MOBILE APP & PWA MANIFEST / SERVICE WORKER ---
