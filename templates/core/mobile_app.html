@@ -15,30 +15,13 @@
 </head>
 <body style="margin:0; padding:0; background:#FAF8F4; font-family:'Nunito', sans-serif;">
   <div id="root"></div>
-  <script type="module" src="{% static 'mobile_app/assets/index-BRfDgghV.js' %}"></script>
-  <div id="pwaInstallBanner" style="display:none; position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:999999; background:#C2410C; color:#fff; padding:12px 24px; borderRadius:30px; font-weight:700; box-shadow:0 4px 15px rgba(194,65,12,0.4); cursor:pointer; display:flex; align-items:center; gap:8px;">
-    <span>📲 Install Auto City App</span>
-  </div>
+  <script type="module" src="{% static 'mobile_app/assets/index-CXFD3qlY.js' %}"></script>
+
   <script>
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      const banner = document.getElementById('pwaInstallBanner');
-      if (banner) banner.style.display = 'flex';
-    });
-    document.getElementById('pwaInstallBanner')?.addEventListener('click', () => {
-      if (deferredPrompt) {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then(() => {
-          deferredPrompt = null;
-          document.getElementById('pwaInstallBanner').style.display = 'none';
-        });
-      }
-    });
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('/static/sw.js').catch(function(){});
     }
   </script>
 </body>
+
 </html>
