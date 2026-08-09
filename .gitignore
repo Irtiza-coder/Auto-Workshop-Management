@@ -6,9 +6,9 @@ env/
 *$py.class
 __pycache__/
 
-# Django
+# Django 
 db.sqlite3
-db.sqlite3-journal
+db.sqlite3-journal 
 media/
 staticfiles/
 *.log
@@ -21,10 +21,10 @@ mobile_app/android/.gradle/
 mobile_app/android/build/
 mobile_app/android/app/build/
 
-# Archives & Large Binary Builds
+# Archives & Large Binary Builds 
 *.zip
 *.apk
-*.aab
+*.aab 
 
 # IDE & OS Files
 .idea/

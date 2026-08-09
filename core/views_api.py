@@ -42,8 +42,19 @@ def api_login(request):
 def get_user_or_default(request):
     if request.user and request.user.is_authenticated:
         return request.user
+    
+    user_id = request.headers.get('X-User-Id') or request.GET.get('user_id')
     from django.contrib.auth.models import User
-    return User.objects.first()
+    if user_id:
+        try:
+            return User.objects.get(id=user_id)
+        except (User.DoesNotExist, ValueError):
+            pass
+            
+    # Fallback to user with active job cards (e.g. Irtiza), or first user
+    user_with_jobs = User.objects.filter(job_cards__isnull=False).distinct().first()
+    return user_with_jobs or User.objects.first()
+
 
 def api_dashboard(request):
     user = get_user_or_default(request)
